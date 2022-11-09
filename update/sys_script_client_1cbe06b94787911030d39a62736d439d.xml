@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description>Utilice GetEmail Address Script Incluir para recuperar la dirección de correo electrónico de Requested for de la base de datos cuando cambia el valor de Requested for.</description>
+        <field>u_requested_for</field>
+        <global>true</global>
+        <isolate_script>true</isolate_script>
+        <messages/>
+        <name>NeedIt Populate Email Field</name>
+        <order/>
+        <script><![CDATA[function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+
+  // Modified the if to return if the newValue == oldValue to avoid
+  // unecessary trips to the server
+  if (isLoading && !g_form.isNewRecord() || newValue === '' || newValue == oldValue) {
+    return;
+  }
+
+  // Instancia el Script Include GetEmailAddress creado anteriormente 
+  var getEmailAddr = new GlideAjax('GetEmailAddress');
+  // Especifica el método a utilizar
+  getEmailAddr.addParam('sysparm_name','getEmail');
+  // Pasa el valor requerido para sys_id
+  getEmailAddr.addParam('sysparm_userID', g_form.getValue('u_requested_for'));
+  // Envía la petición al servidor
+  getEmailAddr.getXML(populateEmailField);
+
+
+  // Para procesar la respuesta del servidor
+  function populateEmailField(response){
+    // Extrae los datos del email, limpia el valor en el campo, 
+    // inserta el nuvo valor de email
+    var emailFromScriptInclude = response.responseXML.documentElement.getAttribute("answer");
+    g_form.clearValue('u_requested_for_email');
+    g_form.setValue('u_requested_for_email',emailFromScriptInclude);
+  }
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-11-09 15:57:13</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>1cbe06b94787911030d39a62736d439d</sys_id>
+        <sys_name>NeedIt Populate Email Field</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sys_script_client_1cbe06b94787911030d39a62736d439d</sys_update_name>
+        <table>x_58872_needit_needit</table>
+        <type>onChange</type>
+        <ui_type>0</ui_type>
+        <view/>
+    </sys_script_client>
+</record_update>
